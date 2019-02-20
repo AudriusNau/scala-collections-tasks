@@ -3,7 +3,7 @@ package streams.scala
 import java.time.{LocalDate, LocalTime}
 
 import org.scalatest.{Matchers, WordSpec}
-
+import java.time.DayOfWeek
 class StreamOpsSpec extends WordSpec with Matchers {
 
   val streamOps = new StreamOps
@@ -50,7 +50,23 @@ class StreamOpsSpec extends WordSpec with Matchers {
       /**
         * Should pick 9:30 and 10:00 times for weekdays and 7:00 to weekends
         */
-      val timesResolver: LocalDate => List[LocalTime] = ???
+      val timesResolver: LocalDate => List[LocalTime] =  {( timesResolver : LocalDate)=> (
+        timesResolver.getDayOfWeek match{
+          case DayOfWeek.MONDAY => List(LocalTime.of(9, 30),
+            LocalTime.of(10, 0))
+          case DayOfWeek.TUESDAY => List(LocalTime.of(9, 30),
+            LocalTime.of(10, 0))
+          case DayOfWeek.WEDNESDAY => List(LocalTime.of(9, 30),
+            LocalTime.of(10, 0))
+          case DayOfWeek.THURSDAY => List(LocalTime.of(9, 30),
+            LocalTime.of(10, 0))
+          case DayOfWeek.FRIDAY => List(LocalTime.of(9, 30),
+            LocalTime.of(10, 0))
+          case DayOfWeek.SATURDAY => List(LocalTime.of(7, 0))
+          case DayOfWeek.SUNDAY => List(LocalTime.of(7, 0))
+        }
+      )
+      }
 
       {
         val expected = List(

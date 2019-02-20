@@ -20,7 +20,7 @@ class MonadicCollectionSpec extends WordSpec
 
   "MonadicCollectionOps" should {
     "option modifier" in {
-      val modifier: Int => Int = ???
+      val modifier: Int => Int = { x => x*3}
       monadicCollectionOps
         .optionModifier(Option(1), modifier)
         .value shouldEqual 3
@@ -58,7 +58,7 @@ class MonadicCollectionSpec extends WordSpec
     }
 
     "try function" in {
-      val function: (Int, Int) => Double = ???
+      val function: (Int, Int) => Double ={ (x: Int,y: Int) => ( x.toDouble / y.toDouble )}
 
       monadicCollectionOps
         .tryFunction(5, 2,  function)
@@ -71,7 +71,7 @@ class MonadicCollectionSpec extends WordSpec
         if(int < 5) {
           throw new TooSmall
         } else if(int == 5) {
-          5
+          10
         } else if(int == 6) {
           throw new SixNotAllowed
         } else {
