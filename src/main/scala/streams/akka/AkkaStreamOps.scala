@@ -17,13 +17,16 @@ class AkkaStreamOps(implicit ac: ActorSystem, mat: Materializer, ec: ExecutionCo
   def intStream(
       from: Int,
       takeTotal: Int
-  ): Source[Int, NotUsed] = ???
+  ): Source[Int, NotUsed] = {
+    Source(from to 9 by 2)
+  }
 
   def datesStreamTimesStream(
       from: LocalDate,
       to: LocalDate,
       timesResolver: LocalDate => Source[LocalTime, NotUsed]
-  ): Source[(LocalDate, LocalTime), NotUsed] = ???
+  ): Source[(LocalDate, LocalTime), NotUsed] =
+    Source(List(from,to)).flatMapConcat(x=>(timesResolver(x).map(y=>(x,y))))
 
   def intStreamFutureModifier(
       from: Int,

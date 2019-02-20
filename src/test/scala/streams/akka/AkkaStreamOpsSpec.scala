@@ -1,6 +1,6 @@
 package streams.akka
 
-import java.time.{LocalDate, LocalTime}
+import java.time.{DayOfWeek, LocalDate, LocalTime}
 
 import akka.NotUsed
 import akka.actor.ActorSystem
@@ -32,7 +32,20 @@ class AkkaStreamOpsSpec extends WordSpec
     }
 
     "valid date stream times stream" in {
-      val timesResolver: LocalDate => Source[LocalTime, NotUsed] = ???
+      val timesResolver: LocalDate => Source[LocalTime, NotUsed] ={
+        (timesResolver:LocalDate)=>(
+          timesResolver.getDayOfWeek match{
+            case DayOfWeek.MONDAY|
+                 DayOfWeek.TUESDAY   |
+                 DayOfWeek.WEDNESDAY |
+                 DayOfWeek.THURSDAY |
+                 DayOfWeek.FRIDAY=> Source(List(LocalTime.of(9, 30),
+              LocalTime.of(10, 0)))
+
+            case DayOfWeek.SATURDAY | DayOfWeek.SUNDAY => Source(List(LocalTime.of(7, 0)))
+          }
+          )
+      }
 
       {
         val expected = Seq(
