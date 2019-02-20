@@ -58,5 +58,7 @@ class StreamOps {
       from: LocalDate,
       to: LocalDate,
       timesResolver: LocalDate => Stream[LocalTime]
-  ): Stream[(LocalDate, LocalTime)] = ???
+  ): Stream[(LocalDate, LocalTime)] =
+    datesStream(from,to).flatMap(x =>(timesResolver(x).map(y=>(x,y))))
+
 }
