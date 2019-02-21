@@ -16,10 +16,10 @@ class MonadicCollectionOps(implicit ec: ExecutionContext) {
   def optionModifierOption(
       value: Option[Int],
       modifier: Int => Option[Int]
-  ): Option[Int] = ???
-
-
-
+  ): Option[Int] = value match{
+    case Some(v) => modifier(v)
+    case None => None
+  }
 
   def tryFunction(
       value: Int,
@@ -32,18 +32,28 @@ class MonadicCollectionOps(implicit ec: ExecutionContext) {
       value: Int,
       modifier: Int => Int
   ): Try[Double] = Try(modifier(value)) match {
-    case Success(x) => Success(x)
-    case Failure(exception) => exception match{
-      case e: TooSmall => Try(0)
-      case e:SixNotAllowed => Try(10)
-      case e: TooLarge=> Try(20)
+    case Success(x) => Try(modifier(x).toDouble*2)
+    case Failure(f) => f match {
+      case _:TooSmall => Try(0.0)
+      case exception:SixNotAllowed =>
+        Try(throw new RuntimeException("Error while applying modifier", exception))
+      case _:TooLarge => Try(modifier(value).toDouble)
     }
+
   }
 
   def eitherModifierExceptionHandled(
       value: Int,
       modifier: Int => Int
-  ): Either[ModifierFailure, Double] = ???
+  ): Either[ModifierFailure, Double] =
+    try{
+    Right(modifier(value)*2)
+  } catch {
+    case _:TooSmall => Right(0.0)
+    case exception:SixNotAllowed =>
+      Left(ModifierFailure(new RuntimeException("Error while applying modifier", exception)))
+    case exception:TooLarge =>Left(ModifierFailure(exception))
+  }
 
   def multiplesFuture(
       intSeqGenerator: (Int, Int) => Future[Seq[Int]],

@@ -32,11 +32,22 @@ class AkkaStreamOps(implicit ac: ActorSystem, mat: Materializer, ec: ExecutionCo
       from: Int,
       to: Int,
       modifier: Int => Future[Int]
-  ): Source[Int, NotUsed] = ???
+  ): Source[Int, NotUsed] = Source(from to to).mapAsync(1)(x=> modifier(x))
 
   def intStreamExceptionHandled(
       from: Int,
       to: Int,
       modifier: Int => Int
-  ): Source[Either[RuntimeException, Int], NotUsed] = ???
+  ): Source[Either[RuntimeException, Int], NotUsed] ={
+    Source(from to to).map(x =>
+    try {
+      Right(modifier(x))
+    }catch{
+      case expectedException: BadButExpectedException =>Left(expectedException)
+      case unexpectedException: RuntimeException=>
+        Left(new RuntimeException("Error while applying modifier", unexpectedException))
+
+    }
+    )
+  }
 }

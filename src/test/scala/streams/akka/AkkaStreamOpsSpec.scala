@@ -74,7 +74,7 @@ class AkkaStreamOpsSpec extends WordSpec
     }
 
     "valid int stream future modifier" in {
-      val modifier: Int => Future[Int] = ???
+      val modifier: Int => Future[Int] =(int:Int)=> Future{int*3}
       val expected = Seq(9, 12, 15, 18)
       akkaStreamOps
         .intStreamFutureModifier(3, 6, modifier)

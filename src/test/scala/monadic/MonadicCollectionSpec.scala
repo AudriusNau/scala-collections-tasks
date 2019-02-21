@@ -34,7 +34,12 @@ class MonadicCollectionSpec extends WordSpec
     }
 
     "option modifier option" in {
-      val modifier: Int => Option[Int] = ???
+      val modifier: Int => Option[Int] = {mod:Int=>(
+
+        if(mod<5)Option(mod*2)
+        else if(mod==5) Option(mod)
+        else None
+      ) }
 
       val expected = Seq(
         Some(2),
@@ -71,7 +76,7 @@ class MonadicCollectionSpec extends WordSpec
         if(int < 5) {
           throw new TooSmall
         } else if(int == 5) {
-          10
+          5
         } else if(int == 6) {
           throw new SixNotAllowed
         } else {
