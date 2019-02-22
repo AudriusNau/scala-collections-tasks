@@ -145,8 +145,8 @@ class MonadicCollectionSpec extends WordSpec
     }
 
     "future calculation" in {
-      val intSeqGenerator: (Int, Int) => Future[Seq[Int]] = ???
-      val isMultipleOf: Int => Int => Future[Boolean] = ???
+      val intSeqGenerator: (Int, Int) => Future[Seq[Int]] = (from:Int,to:Int)=>Future(from to to)
+      val isMultipleOf: Int => Int => Future[Boolean] = x=> y=>Future(y%x==0)
 
       val multiplesFuture = monadicCollectionOps
         .multiplesFuture(intSeqGenerator, isMultipleOf) _

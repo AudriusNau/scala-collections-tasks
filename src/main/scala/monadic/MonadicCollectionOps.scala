@@ -62,5 +62,20 @@ class MonadicCollectionOps(implicit ec: ExecutionContext) {
       from: Int,
       to: Int,
       multipleOf: Int
-  ): Future[Either[MultiplesSearchFailure, Seq[Int]]] = ???
+  ): Future[Either[MultiplesSearchFailure, Seq[Int]]] = {
+    if (multipleOf==0) Future(Left(ErrorDuringProcessing(new ArithmeticException)))
+    else if(multipleOf > to)  Future(Left(NoMultiplesFound))
+    else {
+     val result=for{
+       value <-intSeqGenerator(from, to)
+       multiples<- Future.sequence(
+         value.map(int =>isMultipleOf(multipleOf)(int)
+         .map(is=>(int,is)))
+       )
+       pairs<- Future(Right(multiples.filter(t=>t._2).map(t=>t._1)))
+     }yield pairs
+
+     result
+    }
+  }
 }
